@@ -7,7 +7,8 @@ import { data } from "@/data/mockData";
 import { tabStatusMap, type Tab } from "@/data/contants";
 import { CreateRequestModal } from "@/components/Modal/CreateRequsetModal/CreateRequestModal";
 import type { TicketData, Action } from "@/data/types";
-import StatusBadge from "@/components/StatusBadge/StatusBadge";
+import { Box } from "@chakra-ui/react";
+import MobileRequestsTable from "@/components/RequestsTable/MobileRequestsTable";
 
 // Reducer function
 const newRequestReducer = (
@@ -41,7 +42,7 @@ export default function Dashboard() {
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Box w="100%" minH="100vh" bg="#fff">
       <Header />
       <SearchBar
         onOpenModal={() => setModalOpen(true)}
@@ -58,59 +59,12 @@ export default function Dashboard() {
 
       <StatusTabs active={activeTab} setActive={setActiveTab} />
 
-      {/* Desktop Table */}
-      <div className="hidden md:block">
+      <Box display={{ base: "none", md: "block" }}>
         <RequestsTable data={filteredData} />
-      </div>
-
-      {/* Mobile Cards */}
-      <div className="block md:hidden px-4 mt-4 space-y-3">
-        {filteredData.map((row) => (
-          <div
-            key={row.id}
-            className="bg-white rounded-lg shadow p-4 flex flex-col gap-2"
-          >
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-sm">{row.number}</span>
-              <StatusBadge status={row.status} />
-            </div>
-            <div className="text-xs text-gray-600">
-              <p>
-                <span className="font-medium">Аптека:</span> {row.pharmacy.code}{" "}
-                - {row.pharmacy.address}
-              </p>
-              <p>
-                <span className="font-medium">Создана:</span>{" "}
-                {row.created.toLocaleString()}
-              </p>
-              <p>
-                <span className="font-medium">Приоритет:</span> {row.priority}
-              </p>
-              <p>
-                <span className="font-medium">Тема:</span> {row.topic}
-              </p>
-              <p>
-                <span className="font-medium">Категория:</span> {row.category}
-              </p>
-              {row.technician && (
-                <p>
-                  <span className="font-medium">Техник:</span> {row.technician}
-                </p>
-              )}
-              {row.reaction && (
-                <p className="text-green-600">
-                  <span className="font-medium">Реакция:</span> {row.reaction}
-                </p>
-              )}
-              {row.solution && (
-                <p className="text-green-600">
-                  <span className="font-medium">Решение:</span> {row.solution}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      </Box>
+      <Box display={{ base: "block", md: "none" }} px={4} mt={4}>
+        <MobileRequestsTable data={filteredData} />
+      </Box>
+    </Box>
   );
 }

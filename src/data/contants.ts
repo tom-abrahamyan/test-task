@@ -11,6 +11,7 @@ export const PRIORITY = {
 
 export type Priority = (typeof PRIORITY)[keyof typeof PRIORITY];
 
+
 export const tabs = [
   "New",
   "Rejected",

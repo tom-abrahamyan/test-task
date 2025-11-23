@@ -57,3 +57,17 @@ export const data: TicketData[] = [
     status: "closed",
   },
 ];
+
+
+export const TheadData: string[] = [
+  "№",
+  "Аптека",
+  "Создана",
+  "Приоритет",
+  "Тема",
+  "Категория",
+  "Техник",
+  "Реакция",
+  "Решение",
+  "Статус",
+];

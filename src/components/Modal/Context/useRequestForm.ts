@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PharmacyArray } from "@/data/contants";
 import type { Priority } from "@/data/contants";
 import type { FormChangeEvent, TicketData } from "@/data/types";
+import { generateRandomCode } from "@/utils/utils";
 
 export const useRequestForm = () => {
   const [form, setForm] = useState({
@@ -33,13 +34,19 @@ export const useRequestForm = () => {
     }));
   };
 
+  const handleRemove = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index),
+    }));
+  };
+
   const submit = (): TicketData | null => {
     const pharmacy = PharmacyArray.find((p) => p.code === form.pharmacyCode);
     if (!pharmacy) return null;
-
-    return {
+    const obj:TicketData = {
       id: Date.now(),
-      number: String(Date.now()),
+      number: generateRandomCode(),
       pharmacy,
       priority: form.priority,
       created: new Date(),
@@ -50,7 +57,9 @@ export const useRequestForm = () => {
       solution: "",
       status: "new",
     };
+    console.log(obj);
+    return obj;
   };
 
-  return { form, handleChange, addFiles, submit };
+  return { form, handleChange, addFiles, handleRemove, submit };
 };

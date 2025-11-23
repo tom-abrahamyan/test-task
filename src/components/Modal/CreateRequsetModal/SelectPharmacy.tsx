@@ -1,25 +1,35 @@
 import { PharmacyArray } from "@/data/contants";
-import type { SelectPharmacyProps } from "@/data/types";
+import { FormControl, FormLabel, Select } from "@chakra-ui/react";
+import { useRequestFormContext } from "../Context/useRequestFormContext";
 
-const SelectPharmacy = ({ value, onChange }:SelectPharmacyProps) => {
+const SelectPharmacy = () => {
+  const { form, handleChange } = useRequestFormContext();
+
   return (
-    <div>
-      <label className="font-medium text-gray-700">Аптека</label>
-      <select
+    <FormControl>
+      <FormLabel fontSize="12px" fontWeight="400" color="#1C1C1C">
+        Аптека
+      </FormLabel>
+      <Select
         name="pharmacyCode"
-        value={value}
-        onChange={onChange}
-        className="w-full mt-1 p-3 border rounded-lg bg-gray-50"
+        value={form.pharmacyCode}
+        onChange={handleChange}
+        mt="8px"
+        color="#000"
+        borderRadius="8px"
+        borderColor="#B0B0B0"
+        placeholder="Выберите аптеку от которой исходит заявка"
+        _placeholder={{ color: "#B0B0B0" }}
+        _focusVisible={{ borderColor: "#B0B0B0", boxShadow: "none" }}
       >
-        <option value="">Выберите аптеку</option>
-
         {PharmacyArray.map((pharmacy) => (
           <option key={pharmacy.code} value={pharmacy.code}>
             {pharmacy.code} {pharmacy.address}
           </option>
         ))}
-      </select>
-    </div>
+      </Select>
+    </FormControl>
   );
 };
+
 export default SelectPharmacy;

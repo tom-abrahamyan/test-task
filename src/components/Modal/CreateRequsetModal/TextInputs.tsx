@@ -1,30 +1,56 @@
-import type { TextInputsProps } from "@/data/types";
+import { VStack, FormControl, FormLabel, Textarea } from "@chakra-ui/react";
+import SelectPriority from "./SelectPriority";
+import { useRequestFormContext } from "../Context/useRequestFormContext";
 
-const TextInputs = ({ topic, description, onChange }:TextInputsProps) => {
+const TextInputs = () => {
+  const { form, handleChange } = useRequestFormContext();
+
   return (
-    <>
-      <div>
-        <label className="font-medium text-gray-700">Тема заявки</label>
-        <input
+    <VStack spacing={4} align="stretch">
+      {/* Тема заявки */}
+      <FormControl>
+        <FormLabel fontSize="12px" fontWeight="400" color="#1C1C1C">
+          Тема заявки
+        </FormLabel>
+        <Textarea
           name="topic"
-          value={topic}
-          onChange={onChange}
-          className="w-full mt-1 p-3 border rounded-lg bg-gray-50"
-          placeholder="Краткое название"
+          value={form.topic}
+          minHeight="70px"
+          onChange={handleChange}
+          color="#000"
+          borderRadius="8px"
+          borderColor="#B0B0B0"
+          placeholder="Дайте заявке краткое название: например, сломался холодильник или не работает кондиционер"
+          _placeholder={{ color: "#B0B0B0" }}
+          _focusVisible={{ borderColor: "#9ca3af", boxShadow: "none" }}
         />
-      </div>
+      </FormControl>
 
-      <div>
-        <label className="font-medium text-gray-700">Описание проблемы</label>
-        <textarea
+      {/* Select Priority */}
+      <SelectPriority />
+
+      {/* Описание проблемы */}
+      <FormControl>
+        <FormLabel fontSize="12px" fontWeight="400" color="#1C1C1C">
+          Описание проблемы
+        </FormLabel>
+        <Textarea
           name="description"
-          value={description}
-          onChange={onChange}
-          className="w-full mt-1 p-3 border rounded-lg bg-gray-50 h-28 resize-none"
-          placeholder="Опишите проблему..."
+          value={form.description}
+          onChange={handleChange}
+          minHeight="164px"
+          color="#000"
+          borderRadius="8px"
+          borderColor="#B0B0B0"
+          placeholder={`Кратко опишите проблему:\n\n •  Что случилось?\n •  Дата и время произошедшего?\n •  Сколько длится проблема?\n •  Насколько она влияет на вашу работу?`}
+          _placeholder={{ color: "#B0B0B0", whiteSpace: "pre-wrap" }}
+          resize="none"
+          _focusVisible={{ borderColor: "#9ca3af", boxShadow: "none" }}
+          whiteSpace="pre-wrap"
+          wordBreak="break-word"
         />
-      </div>
-    </>
+      </FormControl>
+    </VStack>
   );
 };
 

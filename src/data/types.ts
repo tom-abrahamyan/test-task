@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Priority } from "./contants";
 
 export interface category {
@@ -57,30 +58,35 @@ export interface RequestFormProps {
   addFiles: (files: File[]) => void;
 }
 
-export interface FileUploadProps {
-  files: File[];
+
+
+export interface RequestFormContextType {
+  form: {
+    pharmacyCode: string;
+    category: string;
+    topic: string;
+    priority: Priority;
+    description: string;
+    files: File[];
+  };
+  handleChange: (e: FormChangeEvent) => void;
   addFiles: (files: File[]) => void;
+  handleRemove: (index: number) => void;
+  submit: () => TicketData | null;
 }
 
-export interface SelectPharmacyProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+export interface RequestFormProviderProps {
+  children: ReactNode;
 }
 
-export interface SelectCategoryProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+export interface CreateRequestModalProps {
+  open: boolean;
+  setModalOpen: (value: boolean) => void;
+  dispatch: React.Dispatch<Action>;
 }
 
-export interface SelectPriorityProps {
-  value: Priority;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+export interface CreateRequestFormBodyProps {
+  dispatch: React.Dispatch<Action>;
+  onClose: () => void;
 }
 
-export interface TextInputsProps {
-  topic: string;
-  description: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-}

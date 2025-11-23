@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Box, IconButton } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 
 interface ModalProps {
   open: boolean;
@@ -6,36 +8,55 @@ interface ModalProps {
   children: ReactNode;
 }
 
+const scaleIn = keyframes`
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+`;
+
 export const Modal = ({ open, onClose, children }: ModalProps) => {
   if (!open) return null;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+    <Box
+      position="fixed"
+      inset={0}
+      bg="rgba(0,0,0,0.5)"
+      backdropFilter="blur(4px)"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      zIndex={50}
       onClick={onClose}
     >
-      <div
-        className="
-          bg-white rounded-xl 
-          w-[90%] max-w-[1007px]      
-          h-[90vh] max-h-[741px]        
-          p-6 shadow-xl relative animate-scaleIn
-          overflow-y-auto             
-
-          sm:max-w-[90%]             
-          sm:max-h-[85vh]           
-        "
+      <Box
+        bg="white"
+        borderRadius="xl"
+        w="90%"
+        maxW={{ base: "1007px", sm: "90%" }}
+        h="90vh"
+        maxH={{ base: "741px", sm: "85vh" }}
+        p={6}
+        boxShadow="0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)"
+        position="relative"
+        overflowY="auto"
+        animation={`${scaleIn} 0.2s ease-out`}
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          className="absolute right-4 top-4 text-xl text-gray-500 hover:text-black"
+        <IconButton
+          aria-label="Закрыть"
+          icon={<Box as="span">✕</Box>}
+          position="absolute"
+          top={4}
+          right={4}
+          variant="ghost"
+          color="gray.500"
+          fontSize="xl"
+          _hover={{ color: "black" }}
           onClick={onClose}
-        >
-          ✕
-        </button>
+        />
 
         {children}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };

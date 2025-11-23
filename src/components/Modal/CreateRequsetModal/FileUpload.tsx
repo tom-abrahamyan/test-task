@@ -1,6 +1,12 @@
-import type { FileUploadProps } from "@/data/types";
+import { useRef } from "react";
+import { Box, Flex, Image, Input, List, ListItem, Text, Button } from "@chakra-ui/react";
+import { useRequestFormContext } from "../Context/useRequestFormContext";
+import { MdClose } from "react-icons/md";
 
-const FileUpload = ({ files, addFiles }: FileUploadProps) => {
+const FileUpload = () => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { form, addFiles, handleRemove } = useRequestFormContext();
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     addFiles(Array.from(e.dataTransfer.files));
@@ -9,76 +15,110 @@ const FileUpload = ({ files, addFiles }: FileUploadProps) => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       addFiles(Array.from(e.target.files));
-      e.target.value = ""; // reset input
+      e.target.value = "";
     }
   };
 
-  const handleRemove = (index: number) => {
-    const newFiles = files.filter((_, i) => i !== index);
-    addFiles(newFiles);
-  };
-
   return (
-    <div className="mt-6">
-      <label className="font-medium text-gray-700">Прикрепите файлы</label>
-      <div className="w-full flex gap-1">
-        <div
+    <Box mt={6}>
+      <Text fontWeight="medium" color="#374151" display={{base:"none", md:"block"}}>
+        Прикрепите файлы
+      </Text>
+      <Flex w="100%" gap={1} flexDirection={{base: "column", md: "row"}}>
+        <Box
+          mt={2}
+          w={{base:"100%", md:"50%"}}
+          p={8}
+          borderWidth="2px"
+          borderStyle="dashed"
+          borderColor="#d1d5db"
+          borderRadius="xl"
+          textAlign="center"
+          color="#6b7280"
+          cursor="pointer"
+          bg="#f9fafb"
+          transition="background 0.2s"
+          _hover={{ bg: "#f3f4f6" }}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
-          className="mt-2 w-[50%] p-8 border-2 border-dashed border-gray-300 rounded-xl text-center text-gray-500 cursor-pointer bg-gray-50 hover:bg-gray-100 transition"
-          onClick={() => document.getElementById("fileInput")?.click()}
+          onClick={() => inputRef.current?.click()}
         >
           Выберите или перетащите файл
-          <input
+          <Input
+            ref={inputRef}
             id="fileInput"
             type="file"
             multiple
-            className="hidden"
+            display="none"
             onChange={handleFileInput}
           />
-        </div>
+        </Box>
 
-        {files.length > 0 && (
-          <ul className="mt-2 space-y-2">
-            {files.map((file, index) => {
+        {form.files.length > 0 && (
+          <List mt={2} spacing={2} w={{base:"100%", md:"50%"}}>
+            {form.files.map((file, index) => {
               const isImage = file.type.startsWith("image/");
               const previewUrl = isImage ? URL.createObjectURL(file) : null;
 
               return (
-                <li
-                  key={index}
-                  className="w-full flex items-center justify-between bg-white border p-2 rounded-lg"
+                <ListItem
+                  key={`${file.name}-${index}`}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  bg="white"
+                  borderWidth="1px"
+                  borderColor="#e5e7eb"
+                  p={2}
+                  borderRadius="lg"
                 >
-                  <div className="flex items-center gap-3">
+                  <Flex align="center" gap={3}>
                     {isImage ? (
-                      <img
+                      <Image
                         src={previewUrl!}
-                        className="w-8 h-6 object-cover rounded border"
-                        onLoad={() => URL.revokeObjectURL(previewUrl!)}
+                        w="2rem"
+                        h="1.5rem"
+                        objectFit="cover"
+                        borderRadius="md"
+                        borderWidth="1px"
+                        borderColor="#e5e7eb"
+                        onLoad={() => previewUrl && URL.revokeObjectURL(previewUrl)}
                       />
                     ) : (
-                      <div className="w-8 h-6 flex items-center justify-center bg-gray-200 text-xs rounded">
+                      <Flex
+                        w="2rem"
+                        h="1.5rem"
+                        align="center"
+                        justify="center"
+                        bg="#e5e7eb"
+                        fontSize="xs"
+                        borderRadius="md"
+                      >
                         FILE
-                      </div>
+                      </Flex>
                     )}
-                    <span className="text-sm text-gray-700">
+                    <Text fontSize="sm" color="#374151">
                       {file.name} — {(file.size / 1024).toFixed(1)} KB
-                    </span>
-                  </div>
+                    </Text>
+                  </Flex>
 
-                  <button
+                  <Button
                     onClick={() => handleRemove(index)}
-                    className="text-red-500 hover:text-red-700 px-2"
+                    variant="ghost"
+                    color="#000"
+                    fontSize="md"
+                    px={2}
+                    _hover={{ color: "#b91c1c" }}
                   >
-                    ✕
-                  </button>
-                </li>
+                    <MdClose size="25px"/>
+                  </Button>
+                </ListItem>
               );
             })}
-          </ul>
+          </List>
         )}
-      </div>
-    </div>
+      </Flex>
+    </Box>
   );
 };
 
